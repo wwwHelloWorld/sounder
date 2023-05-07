@@ -1,9 +1,9 @@
 import { useRef, useEffect, useState } from "react";
-import { Howl, Howler } from "howler";
+import { Howl, Howler, HowlOptions } from "howler";
 import styled from "styled-components";
 
 const EQ = ({ sound }) => {
-  const eq = useRef();
+  const eq = useRef<BiquadFilterNode>();
 
   const [freqSettings, setFreqSettings] = useState<
     Array<{ type: string; value: number }>
@@ -78,6 +78,7 @@ const EQ = ({ sound }) => {
       });
     }
   };
+
 
   return (
     <>
