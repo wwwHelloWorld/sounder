@@ -63,7 +63,7 @@ const TrackWrapper = styled.div`
   gap: 5px;
   align-items: start;
   text-decoration: inherit;
-  font-size: 11px;
+  font-size: clamp(14px,1.25vw, 18px);
 `;
 
 const TrackRow = styled.div`

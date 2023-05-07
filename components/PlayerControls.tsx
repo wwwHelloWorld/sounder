@@ -1,9 +1,10 @@
 import { Howl, Howler } from "howler";
 import styled from "styled-components";
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import Vizulization from "./Vizualization";
+import EQ from "./EQ";
 
 const PlayerControls = () => {
   const [playing, setPlaying] = useState<boolean>(false);
@@ -14,19 +15,20 @@ const PlayerControls = () => {
   const [isEnd, setIsEnd] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(50);
   const [stereo, setStereo] = useState<number>(50);
-  const [source, setSource] = useState<any>('');
+  const [source, setSource] = useState<any>("");
   const [duration, setDuration] = useState<number>(0);
 
-
-  const activeTrackData = useSelector((store: any) => store.playlist.activeTrack);
+  const activeTrackData = useSelector(
+    (store: any) => store.playlist.activeTrack
+  );
   const playlist = useSelector((store: any) => store.playlist.playlistTracks);
 
   useEffect(() => {
-    if(activeTrackData){
+    if (activeTrackData) {
       setSource(playlist.find((el: any) => el.id === activeTrackData));
       updateTrack();
     }
-  } , [activeTrackData])
+  }, [activeTrackData]);
 
   const sound = useMemo(
     () =>
@@ -69,7 +71,7 @@ const PlayerControls = () => {
   const updateTrack = () => {
     sound.stop();
     setDuration(Math.round(sound.duration()));
-  }
+  };
 
   const stopTimers = () => {
     clearInterval(intervalId);
@@ -103,7 +105,6 @@ const PlayerControls = () => {
       stereoData = 0;
     }
     sound.stereo(stereoData);
-
   }, [stereo]);
 
   const timerHandler = (data: string) => {
@@ -129,8 +130,8 @@ const PlayerControls = () => {
       timerHandler("start");
       return;
     }
-    if(!playing && !activeTrackData) {
-      alert("CHOOSE A TRACK PLEASE!!!")
+    if (!playing && !activeTrackData) {
+      alert("CHOOSE A TRACK PLEASE!!!");
     }
     sound.pause();
     setPlaying(false);
@@ -153,15 +154,15 @@ const PlayerControls = () => {
     setStereo(e.target.value);
   };
   const formatTime = (time: number) => {
-  const minutes = Math.floor(time / 60);
-  const seconds = time % 60;
-  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-};
-
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
 
   return (
     <>
-      <Vizulization howler={Howler} isPlaying={playing}/>
+      <Vizulization howler={Howler} isPlaying={playing} />
+      <EQ sound={sound} />
       <PlayerControlsWrapper>
         <PlayerName>{source.name}</PlayerName>
         <ControlPanel>
@@ -188,13 +189,18 @@ const PlayerControls = () => {
         </ControlPanel>
         <>
           <PlayerControlsElements>
-            <button style={{ flexBasis: "10%", opacity: activeTrackData ? 1 : 0.3 }} onClick={handlePlayer}>
-              <Image
-                src="/play-pause.svg"
-                alt="play/pause"
-                width="100"
-                height="50"
-              />
+            <button
+              style={{ background: '#f5deb3', flexBasis: "10%", opacity: activeTrackData ? 1 : 0.3 }}
+              onClick={handlePlayer}
+            >
+              <div>
+                <Image
+                  src="/play-pause.svg"
+                  alt="play/pause"
+                  width="85"
+                  height="45"
+                />
+              </div>
               <span style={{ fontWeight: playing ? "bold" : "lighter" }}>
                 Play
               </span>
@@ -232,12 +238,19 @@ const PlayerControls = () => {
 };
 
 const PlayerControlsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100vw;
-  height: 230px;
-  background: #cccccc;
+  /* height: 25vh; */
+  background-color: #121212;
+  border: 2px solid #000;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
   position: fixed;
   bottom: 0;
-
+  opacity: 0.9;
+  min-height: 200px;
   animation: moveUp 2s;
 
   @keyframes moveUp {
@@ -256,11 +269,14 @@ const PlayerControlsElements = styled.div`
   display: flex;
   flex-direction: row;
   gap: 30px;
+  padding-bottom: 5vh;
 `;
 
 const PlayerName = styled.h3`
+  font-size: clamp(17px, 1.5vw, 25px);
   text-align: center;
-  margin: 30px 0px;
+  margin: 15px 0px;
+  color: wheat;
 `;
 
 const ProgresLineContainer = styled.div`
@@ -271,19 +287,20 @@ const ProgresLineContainer = styled.div`
 
 const ProgresLine = styled.div`
   width: 10px;
-  height: 70px;
+  height: 50px;
 `;
 
 const TimerData = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
+  color: wheat;
 `;
 
 const ControlPanel = styled.div`
   display: flex;
   gap: 20px;
-  justify-content: start;
+  justify-content: space-between;
 `;
 
 const Control = styled.div`
@@ -296,14 +313,17 @@ const Control = styled.div`
   padding-bottom: 20px;
 `;
 const Volume = styled(Control)`
+  color: wheat;
   text-decoration: inherit;
 `;
 const Stereo = styled(Control)`
+  color: wheat;
   text-decoration: inherit;
 `;
 
 const Speed = styled(Control)`
+  color: wheat;
   text-decoration: inherit;
 `;
 
-export default PlayerControls;
+export default memo(PlayerControls);
