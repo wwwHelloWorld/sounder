@@ -3,7 +3,7 @@ import { Howl, Howler } from "howler";
 import styled from "styled-components";
 
 const EQ = ({ sound }) => {
-  const eq = useRef<Howler.EQ>();
+  const eq = useRef();
 
   const [freqSettings, setFreqSettings] = useState<
     Array<{ type: string; value: number }>
