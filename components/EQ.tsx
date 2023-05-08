@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import { Howl, Howler, HowlOptions } from "howler";
 import styled from "styled-components";
 
@@ -26,31 +26,7 @@ const EQ = ({ sound }) => {
   const [eqSetting, setEqSetting] = useState<{}>(EQInitial);
   const [isEQVisible, setIsEQVisible] = useState(false);
 
-  useEffect(() => {
-    // Create EQ instance
-    const eqInstance = Howler.ctx.createBiquadFilter();
-    eqInstance.type = "peaking";
-    eqInstance.frequency.value = 1000;
-    eqInstance.gain.value = 0;
-    eqInstance.Q.value = 1;
-    eq.current = eqInstance;
-
-    // Connect sound to EQ instance
-    sound.on("load", () => {
-      sound._sounds[0]._node.connect(eqInstance);
-      eqInstance.connect(Howler.ctx.destination);
-    });
-  }, [sound, eq]);
-
-  const eqSliders = [
-    { type: "lowest", data: 100 },
-    { type: "low", data: 300 },
-    { type: "mid", data: 1000 },
-    { type: "high", data: 3000 },
-    { type: "highest", data: 10000 },
-  ];
-
-  const handleEQChange = (type: string, value: number) => {
+  const handleEQChange = useCallback((type: string, value: number) => {
     if (eq.current) {
       const newFreqSettings = [...freqSettings];
       const index = newFreqSettings.findIndex((item) => item.type === type);
@@ -77,7 +53,31 @@ const EQ = ({ sound }) => {
         eq.current.connect(eqFilter).connect(Howler.ctx.destination);
       });
     }
-  };
+  }, [eq, eqSetting, freqSettings]);
+
+  const eqSliders = useMemo(() => [
+    { type: "lowest", data: 100 },
+    { type: "low", data: 300 },
+    { type: "mid", data: 1000 },
+    { type: "high", data: 3000 },
+    { type: "highest", data: 10000 },
+  ], []);
+
+  useEffect(() => {
+    // Create EQ instance
+    const eqInstance = Howler.ctx.createBiquadFilter();
+    eqInstance.type = "peaking";
+    eqInstance.frequency.value = 1000;
+    eqInstance.gain.value = 0;
+    eqInstance.Q.value = 1;
+    eq.current = eqInstance;
+
+    // Connect sound to EQ instance
+    sound.on("load", () => {
+      sound._sounds[0]._node.connect(eqInstance);
+      eqInstance.connect(Howler.ctx.destination);
+    });
+  }, [sound, eq]);
 
 
   return (
