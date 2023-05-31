@@ -33,18 +33,20 @@ export default function Home() {
           <>
             <LeftSpeaker>
               <Image
-                src="/leftSpeaker.png"
+                src="/leftSpeaker_full.png"
                 alt="Sounder"
                 width="500"
                 height="318"
+                layout="responsive"
               />
             </LeftSpeaker>
             <RightSpeaker>
               <Image
-                src="/rightSpeaker.png"
+                src="/rightSpeaker_full.png"
                 alt="Sounder"
                 width="500"
                 height="318"
+                layout="responsive"
               />
             </RightSpeaker>
           </>
@@ -95,8 +97,10 @@ const UploadContainer = styled.div`
   justify-content: center;
 `;
 const LeftSpeaker = styled.div`
+  width: 35vw;
+  margin-right: 5vw;
   position: absolute;
-  top: 45%;
+  top: 0;
   left: -5%;
   animation: showLeft 3s;
 
@@ -115,8 +119,10 @@ const LeftSpeaker = styled.div`
   }
 `;
 const RightSpeaker = styled.div`
+  width: 35vw;
+  margin-left: 5vw;
   position: absolute;
-  top: 45%;
+  top: 0;
   right: -5%;
   animation: showRight 3s;
 

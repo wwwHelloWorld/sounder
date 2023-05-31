@@ -71,6 +71,7 @@ const PlayerControls = () => {
   const updateTrack = () => {
     sound.stop();
     setDuration(Math.round(sound.duration()));
+    handlePlayer();
   };
 
   const stopTimers = () => {
@@ -133,9 +134,10 @@ const PlayerControls = () => {
     if (!playing && !activeTrackData) {
       alert("CHOOSE A TRACK PLEASE!!!");
     }
-    sound.pause();
-    setPlaying(false);
-    timerHandler("pause");
+      sound.pause();
+      setPlaying(false);
+      timerHandler("pause");
+
   };
 
   const progressHandler = (_e, i: number) => {
